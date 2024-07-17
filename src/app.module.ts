@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,6 +13,7 @@ import { ImageModule } from './image/image.module';
 import { NetworkModule } from './network/network.module';
 import { VolumeModule } from './volume/volume.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { RequestMiddleware } from './common/middleware/request.middleware';
 
 @Module({
   imports: [
@@ -43,4 +44,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestMiddleware).forRoutes('*');
+  }
+}

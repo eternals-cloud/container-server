@@ -10,6 +10,14 @@ export class GetCodeDto {
   code: string;
 }
 
+export class GetIdDto {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(100)
+  id: string;
+}
+
 export class UsernameDto {
   @IsNotEmpty()
   @IsString()

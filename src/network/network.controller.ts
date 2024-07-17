@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
+import { CommonPaginationDto, GetIdDto } from 'src/common/common.dto';
+import { CreateNetworkDto, UpdateNetworkDto } from './dto/network.dto';
 import { NetworkService } from './network.service';
-import { CreateNetworkDto } from './dto/create-network.dto';
-import { UpdateNetworkDto } from './dto/update-network.dto';
 
 @Controller('network')
 export class NetworkController {
   constructor(private readonly networkService: NetworkService) {}
 
   @Post()
-  create(@Body() createNetworkDto: CreateNetworkDto) {
-    return this.networkService.create(createNetworkDto);
+  async createNetwork(@Headers() headers, @Body() body: CreateNetworkDto) {
+    return await this.networkService.createNetwork(headers, body);
   }
 
   @Get()
-  findAll() {
-    return this.networkService.findAll();
+  async getNetworks(@Headers() headers, @Query() query: CommonPaginationDto) {
+    return await this.networkService.getNetworks(headers, query);
+  }
+
+  @Get('drivers')
+  async getNetworkDrivers(@Headers() headers) {
+    return await this.networkService.getNetworkDrivers(headers);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.networkService.findOne(+id);
+  async getNetwork(@Headers() headers, @Param() param: GetIdDto) {
+    return await this.networkService.getNetwork(headers, param.id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNetworkDto: UpdateNetworkDto) {
-    return this.networkService.update(+id, updateNetworkDto);
+  async updateNetwork(@Headers() headers, @Param() param: GetIdDto, @Body() body: UpdateNetworkDto) {
+    return await this.networkService.updateNetwork(headers, param.id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.networkService.remove(+id);
+  async deleteNetwork(@Headers() headers, @Param() param: GetIdDto) {
+    return await this.networkService.deleteNetwork(headers, param.id);
   }
 }
