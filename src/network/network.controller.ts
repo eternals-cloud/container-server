@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { CommonPaginationDto, GetIdDto } from 'src/common/common.dto';
 import { CreateNetworkDto, UpdateNetworkDto } from './dto/network.dto';
 import { NetworkService } from './network.service';
@@ -18,8 +19,9 @@ export class NetworkController {
   }
 
   @Get('drivers')
-  async getNetworkDrivers(@Headers() headers) {
-    return await this.networkService.getNetworkDrivers(headers);
+  async getNetworkDrivers(@Headers() headers, @Res() res: Response) {
+    const log = await this.networkService.getNetworkDrivers(headers);
+    log.pipe(res);
   }
 
   @Get(':id')
