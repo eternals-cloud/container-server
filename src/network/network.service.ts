@@ -1,7 +1,7 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { env } from 'process';
-import { IHeaders } from 'src/common/common.interface';
+import { IApiResponse, IHeaders } from 'src/common/common.interface';
 import { Readable } from 'stream';
 
 @Injectable()
@@ -18,26 +18,39 @@ export class NetworkService {
     }
   }
 
-  async getNetwork(headers: IHeaders, id: string) {
+  async getNetwork(headers: IHeaders, id: string): Promise<IApiResponse> {
     try {
-      const response = await axios.get(`${env.DOCKER_DAEMON}/networks/${id}`);
-      return response.data;
+      const response = await axios({
+        method: 'GET',
+        url: `${env.DOCKER_DAEMON}/networks/${id}`,
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Success',
+        data: response['data'],
+      };
     } catch (error) {
       throw new HttpException(error.response.data, error.response.status);
     }
   }
 
-  async getNetworks(headers: IHeaders, query: Record<string, any>) {
+  async getNetworks(headers: IHeaders, query: Record<string, any>): Promise<IApiResponse> {
     try {
-      console.log('headers', headers);
-      const response = await axios.get(`${env.DOCKER_DAEMON}/networks`);
-      return response.data;
+      const response = await axios({
+        method: 'GET',
+        url: `${env.DOCKER_DAEMON}/networks`,
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Success',
+        data: response['data'],
+      };
     } catch (error) {
       throw new HttpException(error.response.data, error.response.status);
     }
   }
 
-  async updateNetwork(headers: IHeaders, id: string, body: any) {
+  async deleteUnusedNetworks(headers: IHeaders, id: string) {
     try {
       const response = await axios.delete(`${env.DOCKER_DAEMON}/networks/${id}`);
       return response.data;
@@ -48,8 +61,14 @@ export class NetworkService {
 
   async deleteNetwork(headers: IHeaders, id: string) {
     try {
-      const response = await axios.delete(`${env.DOCKER_DAEMON}/networks/${id}`);
-      return response.data;
+      await axios({
+        method: 'DELETE',
+        url: `${env.DOCKER_DAEMON}/networks/${id}`,
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Success',
+      };
     } catch (error) {
       throw new HttpException(error.response.data, error.response.status);
     }
@@ -60,7 +79,6 @@ export class NetworkService {
       const response = await axios.get(`${env.DOCKER_DAEMON}/containers/3ff6bf88cdbb6980ea132ae90901805f151d4ad7302926638bd9965248e22042/logs?stdout=true&stderr=true&follow=true`, { responseType: 'stream' });
       // /v1.46/containers/{id}/logs
       const plugins = response.data;
-      console.log('plugins', plugins);
       // const networkDrivers = plugins.filter((plugin) => plugin.Config.Interface.Types.includes('NetworkDriver')).map((plugin) => plugin.Name);
       return plugins;
     } catch (error) {

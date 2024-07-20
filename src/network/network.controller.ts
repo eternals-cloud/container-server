@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CommonPaginationDto, GetIdDto } from 'src/common/common.dto';
-import { CreateNetworkDto, UpdateNetworkDto } from './dto/network.dto';
+import { CreateNetworkDto } from './dto/network.dto';
 import { NetworkService } from './network.service';
 
 @Controller('network')
@@ -30,8 +30,8 @@ export class NetworkController {
   }
 
   @Patch(':id')
-  async updateNetwork(@Headers() headers, @Param() param: GetIdDto, @Body() body: UpdateNetworkDto) {
-    return await this.networkService.updateNetwork(headers, param.id, body);
+  async deleteUnusedNetworks(@Headers() headers, @Param() param: GetIdDto) {
+    return await this.networkService.deleteUnusedNetworks(headers, param.id);
   }
 
   @Delete(':id')
