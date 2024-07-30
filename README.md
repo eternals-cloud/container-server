@@ -1,4 +1,4 @@
-# Logistics Server
+# Container Server
 
 ### Version
 
@@ -6,7 +6,7 @@
 
 ## Description
 
-A logistics management system (LMS) is a combination of software tools that optimize business processes. It can help with: Order processing, Inventory management, Transportation, Returning orders, Warehousing.
+"Container" is a web app for managing Docker containers. It features user authentication and real-time monitoring, simplifying container management for developers and admins.
 
 ## Installation
 
